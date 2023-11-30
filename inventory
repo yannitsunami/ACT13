@@ -1,0 +1,5 @@
+
+#ansible_user=opensuse
+
+[Ubuntu]
+192.168.56.111

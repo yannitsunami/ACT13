@@ -1,0 +1,21 @@
+- name: Installing the Memcached
+  apt:
+    name:
+      - memcached
+      - python3-memcache
+    state: present
+    update_cache: yes
+
+- name: Restarting the Memcached
+  service:
+    name: memcached
+    state: restarted
+    enabled: yes
+
+- block:
+  - name: Verifying if already active and running the memcached.
+    shell: systemctl status memcached
+    register: memcached_service
+
+  - debug:
+      msg="{{ memcached_service }}"

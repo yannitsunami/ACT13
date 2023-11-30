@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: Dpkg fixing in Ubuntu Servers
+    shell: |
+      dpkg --configure -a
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Update and Upgrade remote in Ubuntu servers
+    apt:
+      update_cache: yes
+      upgrade: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: controller_node
+  become: true
+  roles:
+   - ntp
+#   - os-p
+   - sql-d
+#   - m-q
+   - memcached
+#   - etcd

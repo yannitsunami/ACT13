@@ -1,0 +1,38 @@
+- name: Install and configure components mariadb
+  apt:
+    name: mariadb-server
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install and configure components python3
+  apt:
+    name: python3
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install and configure components python-pymysql
+  apt:
+    name: python3-pymysql
+  when: ansible_distribution == "Ubuntu"
+
+- name: Creating the 99-openstack.cnf
+  copy:
+    dest: /etc/mysql/mariadb.conf.d/99-openstack.cnf
+    content: |
+      [mysqld]
+      bind-address = 10.0.0.11
+      default-storage-engine = innodb
+      innodb_file_per_table = on
+      max_connections = 4096
+      collation-server = utf8_general_ci
+      character-set-server = utf8
+      
+- name: Restarting the database service
+  shell: service mysql restart
+  when: ansible_distribution == "Ubuntu"
+
+- block:
+  - name: Verifying if already active and running the mysql.
+    shell: systemctl status mysql
+    register: mysql_service
+
+  - debug:
+      msg="{{ mysql_service }}"
